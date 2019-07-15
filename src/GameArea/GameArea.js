@@ -3,16 +3,18 @@ import React from 'react';
 import Point from '../Point/Point.js';
 import Snake from '../Snake/Snake.js';
 
+import { connect } from 'react-redux';
+
 import "./GameArea.css"
 
 class GameArea extends React.Component {
 
     constructor(props) {
         super(props);
-        const foodPos       =   { "x": 200, "y": 140 };
-        const isGameOver    =   false;
-        const leftKey       =   37;
-        this.state = {foodPos, isGameOver, "gameBoundary": {}, "keyCode": leftKey};
+        // const foodPos       =   { "x": 200, "y": 140 };
+        // const isGameOver    =   false;
+        // const leftKey       =   37;
+        // this.state = {foodPos, isGameOver, "gameBoundary": {}, "keyCode": leftKey};
         this.handleSnakeMovement    =   this.handleSnakeMovement.bind(this);
     }
 
@@ -24,9 +26,11 @@ class GameArea extends React.Component {
                     "left": 0, "right": right - left,
                     "top": 0, "bottom": bottom - top
             };
-            this.setState({
-                gameBoundary
-            });
+            const action = {"type": "Add_Game_Boundary", gameBoundary };
+            this.props.dispatch(action);
+            // this.setState({
+            //     gameBoundary
+            // });
         }
     }
 
@@ -36,19 +40,23 @@ class GameArea extends React.Component {
 
         const possibleKeyCodes = [37, 38, 39, 40];
 
-        const isSimilarOrParallelKeyPressed = (code) => code%2 === this.state.keyCode%2;
+        const isSimilarOrParallelKeyPressed = (code) => code%2 === this.props.keyCode%2;
 
         if ( isSimilarOrParallelKeyPressed(keyCode) && possibleKeyCodes.includes(keyCode) ) {
             return ;   
         }
 
-        this.setState({
-            keyCode
-        });
+        const action = { "type": "Update_Key_Code", keyCode };
+        this.props.dispatch(action);
+        // this.setState({
+        //     keyCode
+        // });
     }
 
     handleGameOver = (isGameOver) => {
-        this.setState({isGameOver});
+        const action = { "type": "Stop_Game", isGameOver };
+        this.props.dispatch(action);
+        // this.setState({isGameOver});
     }
 
     handleFoodEat  = (snakePositions) => {
@@ -57,7 +65,7 @@ class GameArea extends React.Component {
         const isUniquePos = ( {x: foodPosX, y: foodPosY}) => snakePositions.some( pos => pos.x === foodPosX && pos.y === foodPosY );
 
         do {
-            const {right, bottom}   =   this.state.gameBoundary;
+            const {right, bottom}   =   this.props.gameBoundary;
 
             let randomLeft   = Math.floor(Math.random()*right);
             let randomBottom = Math.floor(Math.random()*bottom);
@@ -69,22 +77,28 @@ class GameArea extends React.Component {
             foodPos = { x: randomLeft - randomLeft%20, y: randomBottom - randomBottom%20 };    
         } while ( isUniquePos( foodPos ))
 
-        this.setState({foodPos});
+        const action    =   {"type": "Update_Food_Position" , foodPos};
+        this.props.dispatch(action);
+        // this.setState({foodPos});
     }
 
     render() {
         return (
             <div ref={this.gameAreaRefCallback} className="GameArea" onKeyUp={this.handleSnakeMovement} tabIndex="0">
-                <Snake foodPos={this.state.foodPos} 
-                       gameBoundary={this.state.gameBoundary} 
-                       keyCode={this.state.keyCode} 
+                <Snake foodPos={this.props.foodPos} 
+                       gameBoundary={this.props.gameBoundary} 
+                       keyCode={this.props.keyCode} 
                        onGameOver={(isGameOver) => this.handleGameOver(isGameOver)}
                        onFoodEat={(snakePositions) => this.handleFoodEat(snakePositions)}/>
-                <Point xPos={this.state.foodPos.x} yPos={this.state.foodPos.y} />
-                {this.state.isGameOver ? <div className="GameOver">Game Over</div> : ""}
+                <Point xPos={this.props.foodPos.x} yPos={this.props.foodPos.y} />
+                {this.props.isGameOver ? <div className="GameOver">Game Over</div> : ""}
             </div>
         )
     }
 }
 
-export default GameArea;
+const mapStateToProps = state => (
+    { ...state }
+);
+
+export default connect(mapStateToProps)(GameArea);
