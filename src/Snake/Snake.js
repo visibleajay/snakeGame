@@ -10,10 +10,7 @@ class Snake extends React.PureComponent {
         super(props);
         const initialSnakePositions =   [
             {"x": 200, "y": 100, "id": 0 },
-            {"x": 220, "y": 100, "id": 1 },
-            {"x": 240, "y": 100, "id": 2 },
-            {"x": 260, "y": 100, "id": 3 },
-            {"x": 280, "y": 100, "id": 4 },
+            {"x": 220, "y": 100, "id": 1 }
         ];
         this.id         =   5;
         this.isGameOver =   false;
