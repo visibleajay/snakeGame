@@ -33,10 +33,12 @@ class GameArea extends React.Component {
     handleSnakeMovement(event) {
 
         const keyCode = event.keyCode;
-        
+
+        const possibleKeyCodes = [37, 38, 39, 40];
+
         const isSimilarOrParallelKeyPressed = (code) => code%2 === this.state.keyCode%2;
 
-        if ( isSimilarOrParallelKeyPressed(keyCode) ) {
+        if ( isSimilarOrParallelKeyPressed(keyCode) && possibleKeyCodes.includes(keyCode) ) {
             return ;   
         }
 
