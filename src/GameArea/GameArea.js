@@ -42,7 +42,7 @@ class GameArea extends React.Component {
 
         const isSimilarOrParallelKeyPressed = (code) => code%2 === this.props.keyCode%2;
 
-        if ( isSimilarOrParallelKeyPressed(keyCode) && possibleKeyCodes.includes(keyCode) ) {
+        if ( !possibleKeyCodes.includes(keyCode) || isSimilarOrParallelKeyPressed(keyCode) ) {
             return ;   
         }
 
