@@ -1,5 +1,5 @@
 
-import { isItAGameOver, moveSnake } from './Snake.js';
+import { isItAGameOver, moveSnake, snakePosition } from './Snake.js';
 
 describe("isItAGameOver", () => {
 
@@ -90,4 +90,56 @@ describe("moveSnake to a valid newPosition", () => {
     });
 
 });
+
+
+describe("snakePosition", () => {
+
+    const currentPosition = {x: 180, y: 180};
+
+    test("if game has overed than return null as newPosition", () => {    
+       const isGameOver = true 
+       const keyCode    = 39 // right key.
+       const actual     = snakePosition(keyCode, currentPosition, isGameOver);
+
+       expect(actual).toBe(null);
+    });
+
+    test("if game is running than return next new position in left direction", () => {
+        const isGameOver = false;   
+        const keyCode    = 37 // left arrow key.
+        const actual     = snakePosition(keyCode, currentPosition, isGameOver);
+        
+        const expected   = {x: 160, y: 180};
+        expect(actual).toStrictEqual(expected);
+    });
+
+    test("if game is running than return next new position in up direction", () => {
+        const isGameOver = false;   
+        const keyCode    = 38 // up arrow key.
+        const actual     = snakePosition(keyCode, currentPosition, isGameOver);
+        
+        const expected   = {x: 180, y: 160};
+        expect(actual).toStrictEqual(expected);
+    });
+
+    test("if game is running than return next new position in right direction", () => {
+        const isGameOver = false;   
+        const keyCode    = 39 // right arrow key.
+        const actual     = snakePosition(keyCode, currentPosition, isGameOver);
+        
+        const expected   = {x: 200, y: 180};
+        expect(actual).toStrictEqual(expected);
+    });
+
+    test("if game is running than return next new position in down direction", () => {
+        const isGameOver = false;   
+        const keyCode    = 40 // down arrow key.
+        const actual     = snakePosition(keyCode, currentPosition, isGameOver);
+        
+        const expected   = {x: 180, y: 200};
+        expect(actual).toStrictEqual(expected);
+    });
+    
+});
+
 

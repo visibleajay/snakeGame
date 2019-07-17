@@ -41,9 +41,11 @@ export const moveSnake = (snakePos, foodPos, newPosition) => {
 
 /**
  * 
- * @param {*} keyCode 
- * @param {*} currentPosition 
- * @param {*} isGameOver 
+ * Compute next position wrt the keyPressed and current position. 
+ * 
+ * @param {Number} keyCode Possible keyCode value.
+ * @param {Object} currentPosition Initial snake position {x,y} of our snake.
+ * @param {Boolean} isGameOver If game is still running or it's over.
  */
 export const snakePosition  = ( keyCode, currentPosition, isGameOver ) => {
     if ( isGameOver ) return null;
@@ -51,23 +53,24 @@ export const snakePosition  = ( keyCode, currentPosition, isGameOver ) => {
     const leftKey = 37;
     let newPosition =   null;
 
+    const {x,y} = currentPosition;
     if ( keyCode === leftKey ) {
-        newPosition = {"x": currentPosition.x - 20 , "y": currentPosition.y};
+        newPosition = { "x": x - 20 , "y": y };
     }
     
     const upKey   = 38;
     if ( keyCode === upKey ) {
-        newPosition = {"x": currentPosition.x, "y": currentPosition.y - 20, };
+        newPosition = { "x": x, "y": y - 20 };
     }
 
     const rightKey = 39;
     if ( keyCode === rightKey ) {
-        newPosition = {"x": currentPosition.x + 20, "y": currentPosition.y,};
+        newPosition = { "x": x + 20, "y": y };
     }
 
     const downKey  = 40;
     if ( keyCode === downKey ) {
-        newPosition = {"x": currentPosition.x, "y": currentPosition.y + 20,};
+        newPosition = { "x": x, "y": y + 20 };
     }
 
     return newPosition;
@@ -91,7 +94,7 @@ function Snake({foodPos, gameBoundary, keyCode, onGameOver, onFoodEat}) {
 
             if ( isItAGameOver(snakePos, gameBoundary, newPosition) ) {
                 setGameOver(true);
-                onGameOver(); 
+                onGameOver();
             } else {
                 const newSnakePositions = moveSnake(snakePos, foodPos, newPosition)
                 if ( newSnakePositions.length > snakePos.length ) onFoodEat(newSnakePositions);
