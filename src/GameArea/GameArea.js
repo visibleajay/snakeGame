@@ -3,8 +3,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import Point from '../Point/Point.js';
 import Snake from '../Snake/Snake.js';
 
-// import { connect } from 'react-redux';
-
 import "./GameArea.css"
 
 
@@ -25,28 +23,6 @@ function useKeyUp(initialKeyCode = 37) {
 
     return [ state, setKeyUp ];
 }
-
-
-// const handleKeyUp = ({ keyCode }, storedKeyCode) => {
-
-//     const possibleKeyCodes = [37, 38, 39, 40];
-
-//     const isSimilarOrParallelKeyPressed = (code) => code%2 === storedKeyCode%2;
-
-//     if ( !possibleKeyCodes.includes(keyCode) || isSimilarOrParallelKeyPressed(keyCode) ) {
-//         return ;   
-//     }
-
-//     return keyCode;
-// }
-
-// const handleGameOver = () => {
-//     // const action = { "type": "Stop_Game", isGameOver: true };
-//     // this.props.dispatch(action);
-//     // this.setState({isGameOver});
-//     return true;
-// }
-
 
 function useFoodPos(initialFoodPos = { "x": 200, "y": 140 }) {
 
@@ -76,13 +52,6 @@ function useFoodPos(initialFoodPos = { "x": 200, "y": 140 }) {
 
     return [state, updateFoodPos];
 }
-
-// const handleFoodEat  = (snakePositions, gameBoundary) => {
-    
-    // const action    =   {"type": "Update_Food_Position" , foodPos};
-    // this.props.dispatch(action);
-    // this.setState({foodPos});
-// }
 
 function GameArea() {
 
