@@ -95,6 +95,7 @@ function Snake({foodPos, gameBoundary, keyCode, onGameOver, onFoodEat}) {
             if ( isItAGameOver(snakePos, gameBoundary, newPosition) ) {
                 setGameOver(true);
                 onGameOver();
+                clearInterval(refContainer.current); 
             } else {
                 const newSnakePositions = moveSnake(snakePos, foodPos, newPosition)
                 if ( newSnakePositions.length > snakePos.length ) onFoodEat(newSnakePositions);
