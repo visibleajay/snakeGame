@@ -2,23 +2,39 @@
 import React, { useState, useReducer, useCallback, useRef, useEffect } from 'react';
 import Box from './Box/Box.js';
 
-import "./Snake.css";
-
-const moveSnake = (newPosition, gameBoundary, foodPos, snakePos) => {
-
-    const isTouchedBoundary = ({x, y}, {left, top, right, bottom}) => 
-                                x < left || x + 20 > right || y + 20 > bottom || y < top;
+/**
+ * Check if game is over
+ * 
+ * @param {Array} snakePos All {x,y} positions of snake.
+ * @param {Object} gameBoundary Game Boundary contianing {left, top, right, bottom} information.
+ * @param {Object} newPosition next {x,y} position of snake.
+ */
+export const isItAGameOver = (snakePos, gameBoundary, newPosition) => {
+    const isTouchedBoundary = ({x, y}, {left, top, right, bottom}) => x < left || x + 20 > right || y + 20 > bottom || y < top;
 
     const isAteItself = ({x: newPosX, y: newPosY}) => snakePos.some( ({x,y}) => x === newPosX && y === newPosY);
 
-    if ( isTouchedBoundary(newPosition, gameBoundary) || isAteItself(newPosition) ) {
-        return [];
-    }
+    return isTouchedBoundary(newPosition, gameBoundary) || isAteItself(newPosition);
+}
 
+/**
+ * 
+ * Compute new snake position wrt passed parameters.
+ * 
+ * @param {x: number, y: number} newPosition Next positition which needs to be added
+ * @param {x: number, y: number} foodPos Position at which food is placed
+ * @param {Array of box positions} snakePos All Position of snake inside game Area.
+ */
+
+/**
+ * Move snake to next position newPosition, gameBoundary
+ */
+export const moveSnake = (snakePos, foodPos, newPosition) => {
+
+    const isAteFood = ( newPosition, {x: foodPosX, y: foodPosY} ) => newPosition.x === foodPosX && newPosition.y === foodPosY
     let snakePositions  =   [];
-    const {x: foodPosX, y: foodPosY} = foodPos;
     
-    if ( newPosition.x === foodPosX && newPosition.y === foodPosY ) {
+    if ( isAteFood(newPosition, foodPos) ) {
         snakePositions = [  newPosition, ...snakePos.slice() ];
     } else {
         snakePositions = [  newPosition, ...snakePos.slice(0,-1)  ];
@@ -27,7 +43,7 @@ const moveSnake = (newPosition, gameBoundary, foodPos, snakePos) => {
     return snakePositions;
 }
 
-const snakePosition         = ( keyCode, currentPosition, isGameOver ) => {
+export const snakePosition         = ( keyCode, currentPosition, isGameOver ) => {
     if ( isGameOver ) return null;
 
     const leftKey = 37;
@@ -67,15 +83,18 @@ function Snake({foodPos, gameBoundary, keyCode, onGameOver, onFoodEat}) {
 
     useEffect( () => {
         refContainer.current = setInterval( () => {
+            
             const newPosition = snakePosition( keyCode, snakePos[0], isGameOver )
-            const newSnakePosition = newPosition && moveSnake(newPosition, gameBoundary, foodPos, snakePos)
-            if ( newSnakePosition && newSnakePosition.length > 0) {
-                if ( newSnakePosition.length > snakePos.length ) {
-                    onFoodEat(newSnakePosition);
-                }
-                updateSnakePos(newSnakePosition);
+            if ( !newPosition ) return;
+
+            if ( isItAGameOver(snakePos, gameBoundary, newPosition) ) {
+                setGameOver(true);
+                onGameOver(); 
+            } else {
+                const newSnakePositions = moveSnake(snakePos, foodPos, newPosition)
+                if ( newSnakePositions.length > snakePos.length ) onFoodEat(newSnakePositions);
+                updateSnakePos(newSnakePositions);
             }
-            else { setGameOver(true); onGameOver(); }
         }, 150);
         return () => {
             clearInterval(refContainer.current);
