@@ -21,17 +21,13 @@ export const isItAGameOver = (snakePos, gameBoundary, newPosition) => {
  * 
  * Compute new snake position wrt passed parameters.
  * 
- * @param {x: number, y: number} newPosition Next positition which needs to be added
- * @param {x: number, y: number} foodPos Position at which food is placed
- * @param {Array of box positions} snakePos All Position of snake inside game Area.
- */
-
-/**
- * Move snake to next position newPosition, gameBoundary
+ * @param {Object} newPosition Next {x,y} positition which needs to be added
+ * @param {Object} foodPos Position {x,y} at which food is placed
+ * @param {Array} snakePos All Position {x,y} of snake.
  */
 export const moveSnake = (snakePos, foodPos, newPosition) => {
 
-    const isAteFood = ( newPosition, {x: foodPosX, y: foodPosY} ) => newPosition.x === foodPosX && newPosition.y === foodPosY
+    const isAteFood = ( {x, y}, {x: foodPosX, y: foodPosY} ) => x === foodPosX && y === foodPosY;
     let snakePositions  =   [];
     
     if ( isAteFood(newPosition, foodPos) ) {
@@ -43,7 +39,13 @@ export const moveSnake = (snakePos, foodPos, newPosition) => {
     return snakePositions;
 }
 
-export const snakePosition         = ( keyCode, currentPosition, isGameOver ) => {
+/**
+ * 
+ * @param {*} keyCode 
+ * @param {*} currentPosition 
+ * @param {*} isGameOver 
+ */
+export const snakePosition  = ( keyCode, currentPosition, isGameOver ) => {
     if ( isGameOver ) return null;
 
     const leftKey = 37;

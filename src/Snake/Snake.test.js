@@ -1,5 +1,5 @@
 
-import { isItAGameOver } from './Snake.js';
+import { isItAGameOver, moveSnake } from './Snake.js';
 
 describe("isItAGameOver", () => {
 
@@ -56,7 +56,38 @@ describe("isItAGameOver", () => {
         const actual        = isItAGameOver(snakePosition, gameBoundary, newPosition);
         expect(actual).toBe(true);
     });
+
 })
 
 
+
+describe("moveSnake to a valid newPosition", () => {
+
+    const snakePosition = [
+        {x: 200, y: 200},
+        {x: 180, y: 200}
+    ];
+
+    const newPosition = { x: 220, y: 200 };
+    test("move snake to newPosition", () => {
+        const foodPos = {x: 240, y: 200};
+        const actual  = moveSnake(snakePosition, foodPos, newPosition);
+        const expected = [
+            newPosition,
+            ...snakePosition.slice(0, -1)
+        ];
+        expect(actual).toStrictEqual(expected);
+    });
+
+    test("Eat the food and increase the snake length", () => {
+        const foodPos = {x: 220, y: 200};
+        const actual  = moveSnake(snakePosition, foodPos, newPosition);
+        const expected = [
+            newPosition,
+            ...snakePosition
+        ];
+        expect(actual).toStrictEqual(expected);
+    });
+
+});
 
