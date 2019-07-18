@@ -15,9 +15,13 @@ describe("Snake Comp", () => {
       onFoodEat: () => {}
     };
 
+    beforeAll( () => {
+        jest.useFakeTimers();
+    });
+
     afterEach(cleanup);
 
-    xit("Snake should be placed at initial position and should move to the left by 20px after each 150ms", (done) => {
+    it("Snake should be placed at initial position and should move to the left by 20px after each 150ms", () => {
         const { container } = render(<Snake {...props} />);
 
         const [ firstSnakeBox, secondSnakeBox, ...rest ] = container.children;
@@ -26,16 +30,15 @@ describe("Snake Comp", () => {
         expect(firstSnakeBox).toHaveStyle(`top: 100px; left: 200px;`);
         expect(secondSnakeBox).toHaveStyle(`top: 100px; left: 220px;`);
 
-        setTimeout( () => {
-            // TODO:- Resolve warning.
-            expect(firstSnakeBox).toHaveStyle(`top: 100px; left: 140px;`);
-            expect(secondSnakeBox).toHaveStyle(`top: 100px; left: 160px;`);
-            done();
-        }, 500);
+        jest.advanceTimersByTime(500);
+        
+        // TODO:- Resolve warning.
+        expect(firstSnakeBox).toHaveStyle(`top: 100px; left: 140px;`);
+        expect(secondSnakeBox).toHaveStyle(`top: 100px; left: 160px;`);
 
     });
 
-    xit ("Snake touches the wall if direction is unchanging after 1600ms", (done) => {
+    it ("Snake touches the wall if direction is unchanging after 1600ms", () => {
 
         const { container } =   render(<Snake {...props} />);
 
@@ -46,19 +49,16 @@ describe("Snake Comp", () => {
         expect(secondSnakeBox).toHaveStyle(`top: 100px; left: 220px;`);
 
         // TODO:- Understand Behavior with diff timings.
-        setTimeout( () => {
-            // TODO:- Resolve warning.
-            expect(firstSnakeBox).toHaveStyle(`top: 100px; left: 0px;`);
-            expect(secondSnakeBox).toHaveStyle(`top: 100px; left: 20px;`);
-            done();
-        }, 1600);
+        jest.advanceTimersByTime(1600);
+
+        // TODO:- Resolve act warning.
+        expect(firstSnakeBox).toHaveStyle(`top: 100px; left: 0px;`);
+        expect(secondSnakeBox).toHaveStyle(`top: 100px; left: 20px;`);
     });
 
-    it ("Snake hits the wall and Game Over is invoked if direction is unchanging after 1700ms", (done) => {
+    it ("Snake hits the wall and Game Over is invoked if direction is unchanging after 1700ms", () => {
 
-        const mockGameOver = jest.fn( () => {
-            console.log("Game over");
-        });
+        const mockGameOver = jest.fn();
 
         const { container } =   render(<Snake {...props} onGameOver={mockGameOver} />);
 
@@ -68,11 +68,9 @@ describe("Snake Comp", () => {
         expect(firstSnakeBox).toHaveStyle(`top: 100px; left: 200px;`);
         expect(secondSnakeBox).toHaveStyle(`top: 100px; left: 220px;`);
 
-        setTimeout( () => {
-            // TODO:- Resolve warning.
-            expect(mockGameOver).toBeCalled();
-            done();
-        }, 1700);
+        // TODO:- Resolve act warning.
+        jest.advanceTimersByTime(1700);
+        expect(mockGameOver).toBeCalled();
     });
   
 });
