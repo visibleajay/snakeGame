@@ -1,5 +1,5 @@
 
-import { isItAGameOver, moveSnake, snakePosition } from './Snake.js';
+import { isItAGameOver, computeSnakePosition, snakePosition } from './Snake.js';
 
 describe("isItAGameOver", () => {
 
@@ -61,7 +61,7 @@ describe("isItAGameOver", () => {
 
 
 
-describe("moveSnake to a valid newPosition", () => {
+describe("computeSnakePosition to a valid newPosition", () => {
 
     const snakePosition = [
         {x: 200, y: 200},
@@ -71,7 +71,7 @@ describe("moveSnake to a valid newPosition", () => {
     const newPosition = { x: 220, y: 200 };
     test("move snake to newPosition", () => {
         const foodPos = {x: 240, y: 200};
-        const actual  = moveSnake(snakePosition, foodPos, newPosition);
+        const actual  = computeSnakePosition(snakePosition, foodPos, newPosition);
         const expected = [
             newPosition,
             ...snakePosition.slice(0, -1)
@@ -81,7 +81,7 @@ describe("moveSnake to a valid newPosition", () => {
 
     test("Eat the food and increase the snake length", () => {
         const foodPos = {x: 220, y: 200};
-        const actual  = moveSnake(snakePosition, foodPos, newPosition);
+        const actual  = computeSnakePosition(snakePosition, foodPos, newPosition);
         const expected = [
             newPosition,
             ...snakePosition

@@ -1,5 +1,5 @@
 
-import React, { useState, useReducer, useCallback, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Box from './Box/Box.js';
 
 /**
@@ -25,7 +25,7 @@ export const isItAGameOver = (snakePos, gameBoundary, newPosition) => {
  * @param {Object} foodPos Position {x,y} at which food is placed
  * @param {Array} snakePos All Position {x,y} of snake.
  */
-export const moveSnake = (snakePos, foodPos, newPosition) => {
+export const computeSnakePosition = (snakePos, foodPos, newPosition) => {
 
     const isAteFood = ( {x, y}, {x: foodPosX, y: foodPosY} ) => x === foodPosX && y === foodPosY;
     let snakePositions  =   [];
@@ -76,7 +76,6 @@ export const snakePosition  = ( keyCode, currentPosition, isGameOver ) => {
     return newPosition;
 };
 
-
 function Snake({foodPos, gameBoundary, keyCode, onGameOver, onFoodEat}) {
     const initialSnakePositions =   [
         {"x": 200, "y": 100, "id": 0 },
@@ -87,8 +86,7 @@ function Snake({foodPos, gameBoundary, keyCode, onGameOver, onFoodEat}) {
     const [isGameOver, setGameOver]  = useState(false);
 
     useEffect( () => {
-        refContainer.current = setInterval( () => {
-            
+        const moveSnake = () => {
             const newPosition = snakePosition( keyCode, snakePos[0], isGameOver )
             if ( !newPosition ) return;
 
@@ -97,15 +95,16 @@ function Snake({foodPos, gameBoundary, keyCode, onGameOver, onFoodEat}) {
                 onGameOver();
                 clearInterval(refContainer.current); 
             } else {
-                const newSnakePositions = moveSnake(snakePos, foodPos, newPosition)
+                const newSnakePositions = computeSnakePosition(snakePos, foodPos, newPosition)
                 if ( newSnakePositions.length > snakePos.length ) onFoodEat(newSnakePositions);
                 updateSnakePos(newSnakePositions);
             }
-        }, 150);
+        }
+        refContainer.current = setInterval( moveSnake, 150);
         return () => {
             clearInterval(refContainer.current);
         }
-    }, [foodPos, snakePos, keyCode]);
+    }, [snakePos, keyCode]);
 
     return (
         snakePos.map( ({x: left, y: top, id}, index) => {
