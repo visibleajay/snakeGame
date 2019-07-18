@@ -6,6 +6,8 @@ import Snake from './Snake.js';
 
 afterEach(cleanup);
 
+const updateProps   =   (component, container) => render( component, { container } );
+
 describe("Snake Comp", () => {
     const props = {
       foodPos: { x: 200, y: 200 },
@@ -56,7 +58,7 @@ describe("Snake Comp", () => {
         expect(secondSnakeBox).toHaveStyle(`top: 100px; left: 20px;`);
     });
 
-    it ("Snake hits the wall and Game Over is invoked if direction is unchanging after 1700ms", () => {
+    it ("Snake would hit the wall if direction is unchanging after 1700ms and Game will be Overed.", () => {
 
         const mockGameOver = jest.fn();
 
@@ -73,6 +75,107 @@ describe("Snake Comp", () => {
         expect(mockGameOver).toBeCalled();
     });
   
+    it ("Snake moves to the food, have it and grows with it.", () => {
+
+        // fn after having the food
+        const mockFoodEat   = jest.fn();
+
+        // Place food at ( x, y ) position.
+        const foodPos       = { x: 240, y: 160 };
+        const defaultProps  = { ...props, onFoodEat: mockFoodEat, foodPos };
+
+        const { container } =   render(<Snake {...defaultProps} />);
+
+        const [ firstSnakeBox, secondSnakeBox, ...rest ]  = container.children;
+       
+        // Starting position.
+        expect(firstSnakeBox).toHaveStyle(`top: 100px; left: 200px;`);
+        expect(secondSnakeBox).toHaveStyle(`top: 100px; left: 220px;`);
+
+        expect(rest).toHaveLength(0);
+
+        // TODO:- Resolve act warning.
+        // Move snake left by 20px.
+        act( () => {
+            jest.advanceTimersByTime(150);
+        });
+
+        expect(firstSnakeBox).toHaveStyle(`top: 100px; left: 180px;`);
+        expect(secondSnakeBox).toHaveStyle(`top: 100px; left: 200px;`);
+
+        expect(rest).toHaveLength(0);
+
+        const downKey = 40;
+        // Move snake down by 20px.
+        updateProps( <Snake {...defaultProps} keyCode={downKey} />, container );
+        
+        // Make changes to Snake View.
+        // TODO:- Remove this timer as props should be applied instantly.
+        act( () => {
+            jest.advanceTimersByTime(150);
+        });
+
+        const [ firstSnakePositionUpdate1 , secondSnakePositionUpdate1  , ...rest1] = container.children;
+        expect(firstSnakePositionUpdate1).toHaveStyle(`top: 120px; left: 180px;`);
+        expect(secondSnakePositionUpdate1).toHaveStyle(`top: 100px; left: 180px;`);
+
+        expect(rest1).toHaveLength(0);
+
+        // Move snake down by 40px.
+        // State updation will happen after each 150ms.
+        act(() => {
+            jest.advanceTimersByTime(150);
+        });
+        // State updation will happen after each 150ms.
+        act(() => {
+            jest.advanceTimersByTime(150);
+        });
+
+        const [ firstSnakePositionUpdate2 , secondSnakePositionUpdate2  , ...rest2] = container.children;
+        expect(firstSnakePositionUpdate2).toHaveStyle(`top: 160px; left: 180px;`);
+        expect(secondSnakePositionUpdate2).toHaveStyle(`top: 140px; left: 180px;`);
+        
+        expect(rest2).toHaveLength(0);
+
+        const rightKey = 39;
+        // Move snake right by 20px.
+        updateProps( <Snake {...defaultProps} keyCode={rightKey} />, container );
+
+        // Move snake right by 60px. Eat the food and grows with it.
+        act(() => {
+            jest.advanceTimersByTime(150);
+        });
+        act( () => {
+            jest.advanceTimersByTime(150);
+        });
+        act( () => {
+            jest.advanceTimersByTime(150);
+        });
+
+        const [ firstSnakePositionUpdate3 , secondSnakePositionUpdate3, ...rest3] = container.children;
+
+        expect(firstSnakePositionUpdate3).toHaveStyle(`top: 160px; left: 240px;`);
+        expect(secondSnakePositionUpdate3).toHaveStyle(`top: 160px; left: 220px;`);
+        
+        expect(rest3).toHaveLength(1);
+        expect(mockFoodEat).toHaveBeenCalledTimes(1);
+
+        mockFoodEat.mockRestore();
+
+        act(( ) => {
+            jest.advanceTimersByTime(150);
+        });
+
+        const [ firstSnakePositionUpdate4 , secondSnakePositionUpdate4  , thirdSnakePositionUpdate, ...rest4] = container.children;
+
+        expect(firstSnakePositionUpdate4).toHaveStyle(`top: 160px; left: 260px;`);
+        expect(secondSnakePositionUpdate4).toHaveStyle(`top: 160px; left: 240px;`);
+        expect(thirdSnakePositionUpdate).toHaveStyle(`top: 160px; left: 220px;`);
+
+        expect(rest4).toHaveLength(0);
+        expect(mockFoodEat).not.toBeCalled();
+
+    });
 });
   
   
