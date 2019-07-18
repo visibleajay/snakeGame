@@ -29,8 +29,7 @@
     ]
   },
   "devDependencies": {
-    "enzyme": "^3.10.0",
-    "enzyme-adapter-react-16": "^1.14.0",
-    "prettier": "^1.18.2"
+    "@testing-library/jest-dom": "^4.0.0",
+    "@testing-library/react": "^8.0.5"
   }
 }
