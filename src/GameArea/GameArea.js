@@ -75,14 +75,17 @@ function GameArea() {
         }
     }, [gameAreaRef])
     
+    const snakeProps = {
+        foodPos,
+        gameBoundary,
+        keyCode,
+        onGameOver: () => updateGameOver(true),
+        onFoodEat: (snakePositions) => updateFoodPos(snakePositions, gameBoundary)
+    };
 
     return (
         <div ref={gameAreaRef} className="GameArea" onKeyUp={(event) => updateKeyCode(event.keyCode, keyCode)} tabIndex="0">
-            <Snake foodPos={foodPos} 
-                   gameBoundary={gameBoundary} 
-                   keyCode={keyCode} 
-                   onGameOver={() => updateGameOver(true)}
-                   onFoodEat={(snakePositions) => updateFoodPos(snakePositions, gameBoundary)}/>
+            <Snake {...snakeProps} />
             <Point xPos={foodPos.x} yPos={foodPos.y} />
             {isGameOver ? <div className="GameOver">Game Over</div> : ""}
         </div>
