@@ -1,6 +1,8 @@
 import React from 'react';
-import { render, cleanup, act, waitForElement } from '@testing-library/react';
+import { render, cleanup, act } from '@testing-library/react';
 import "@testing-library/jest-dom/extend-expect";
+
+import advanceTimeBy from '../shared';
 
 import Snake from './Snake.js';
 
@@ -32,9 +34,8 @@ describe("Snake Comp", () => {
         expect(firstSnakeBox).toHaveStyle(`top: 100px; left: 200px;`);
         expect(secondSnakeBox).toHaveStyle(`top: 100px; left: 220px;`);
 
-        jest.advanceTimersByTime(500);
+        advanceTimeBy(500);
         
-        // TODO:- Resolve warning.
         expect(firstSnakeBox).toHaveStyle(`top: 100px; left: 140px;`);
         expect(secondSnakeBox).toHaveStyle(`top: 100px; left: 160px;`);
 
@@ -51,9 +52,8 @@ describe("Snake Comp", () => {
         expect(secondSnakeBox).toHaveStyle(`top: 100px; left: 220px;`);
 
         // TODO:- Understand Behavior with diff timings.
-        jest.advanceTimersByTime(1600);
+        advanceTimeBy(1600);
 
-        // TODO:- Resolve act warning.
         expect(firstSnakeBox).toHaveStyle(`top: 100px; left: 0px;`);
         expect(secondSnakeBox).toHaveStyle(`top: 100px; left: 20px;`);
     });
@@ -70,8 +70,7 @@ describe("Snake Comp", () => {
         expect(firstSnakeBox).toHaveStyle(`top: 100px; left: 200px;`);
         expect(secondSnakeBox).toHaveStyle(`top: 100px; left: 220px;`);
 
-        // TODO:- Resolve act warning.
-        jest.advanceTimersByTime(1700);
+        advanceTimeBy(1700);
         expect(mockGameOver).toBeCalled();
     });
   
@@ -94,11 +93,8 @@ describe("Snake Comp", () => {
 
         expect(rest).toHaveLength(0);
 
-        // TODO:- Resolve act warning.
         // Move snake left by 20px.
-        act( () => {
-            jest.advanceTimersByTime(150);
-        });
+        advanceTimeBy(150);
 
         expect(firstSnakeBox).toHaveStyle(`top: 100px; left: 180px;`);
         expect(secondSnakeBox).toHaveStyle(`top: 100px; left: 200px;`);
@@ -111,9 +107,7 @@ describe("Snake Comp", () => {
         
         // Make changes to Snake View.
         // TODO:- Remove this timer as props should be applied instantly.
-        act( () => {
-            jest.advanceTimersByTime(150);
-        });
+        advanceTimeBy(150);
 
         const [ firstSnakePositionUpdate1 , secondSnakePositionUpdate1  , ...rest1] = container.children;
         expect(firstSnakePositionUpdate1).toHaveStyle(`top: 120px; left: 180px;`);
@@ -122,14 +116,7 @@ describe("Snake Comp", () => {
         expect(rest1).toHaveLength(0);
 
         // Move snake down by 40px.
-        // State updation will happen after each 150ms.
-        act(() => {
-            jest.advanceTimersByTime(150);
-        });
-        // State updation will happen after each 150ms.
-        act(() => {
-            jest.advanceTimersByTime(150);
-        });
+        advanceTimeBy(300);
 
         const [ firstSnakePositionUpdate2 , secondSnakePositionUpdate2  , ...rest2] = container.children;
         expect(firstSnakePositionUpdate2).toHaveStyle(`top: 160px; left: 180px;`);
@@ -142,15 +129,7 @@ describe("Snake Comp", () => {
         updateProps( <Snake {...defaultProps} keyCode={rightKey} />, container );
 
         // Move snake right by 60px. Eat the food and grows with it.
-        act(() => {
-            jest.advanceTimersByTime(150);
-        });
-        act( () => {
-            jest.advanceTimersByTime(150);
-        });
-        act( () => {
-            jest.advanceTimersByTime(150);
-        });
+        advanceTimeBy(450);
 
         const [ firstSnakePositionUpdate3 , secondSnakePositionUpdate3, ...rest3] = container.children;
 
