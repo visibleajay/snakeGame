@@ -2,6 +2,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Box from './Box/Box.js';
 
+import PropTypes from 'prop-types';
+
 /**
  * Check if game is over
  * 
@@ -106,12 +108,20 @@ function Snake({foodPos, gameBoundary, keyCode, onGameOver, onFoodEat}) {
         }
     }, [snakePos, keyCode]);
 
-    return (
+    return (    
         snakePos.map( ({x: left, y: top, id}, index) => {
             return <Box key={index} left={left} top={top} />
         })
     )
 }
+
+Snake.propTypes = {
+    foodPos: PropTypes.object.isRequired,
+    gameBoundary: PropTypes.object.isRequired,
+    keyCode: PropTypes.number,
+    onGameOver: PropTypes.func.isRequired,
+    onFoodEat: PropTypes.func.isRequired
+};
 
 export default Snake;
 
