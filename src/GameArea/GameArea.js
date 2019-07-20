@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useReducer } from 'react';
 import Point from '../Point/Point.js';
 import Snake from '../Snake/Snake.js';
 
@@ -62,15 +62,45 @@ function useFoodPos(initialFoodPos = { "x": 200, "y": 140 }) {
     return [state, updateFoodPos];
 }
 
+function reducer(state, action) {
+    switch( action.type ) {
+        case "Update_Game_Boundary":
+            return {
+                ...state,
+                "gameBoundary": action.gameBoundary
+            };
+        case "Update_Game_Over":
+            return {
+                ...state,
+                "isGameOver": action.isGameOver
+            };
+        case "Increment_Score":
+            let newScore = {"score": state.score+1};
+            if ( state.highScore < newScore.score ) {
+                newScore   = {...newScore, highScore: newScore.score}
+            }
+            return {
+                ...state,
+                ...newScore
+            };
+        case "Restart_Game":
+            return {
+                ...state,
+                isGameOver: false,
+                score: -1,
+                highScore: -1
+            };
+        default:
+            return state;
+    }
+}
+
 function GameArea() {
-
-    const [gameBoundary, updateGameBoundary] = useState({});
-    const [isGameOver, updateGameOver]       = useState(false);
-    const [score, setScore]                  = useState({'score': -1, 'highScore': -1});
-    const [keyCode, updateKeyCode]           = useKeyUp();
-    const [foodPos, updateFoodPos]           = useFoodPos();
-
-    const gameAreaRef   =   useRef();
+    
+    const gameAreaRef               =   useRef();
+    const [state, dispatch]         = useReducer(reducer, {isGameOver: false, gameBoundary: {}, score: -1, highScore: -1});
+    const [keyCode, updateKeyCode]  = useKeyUp();
+    const [foodPos, updateFoodPos]  = useFoodPos();
 
     useEffect( () => {
         if ( gameAreaRef ) {
@@ -80,8 +110,7 @@ function GameArea() {
                     "left": 0, "right": right - left,
                     "top": 0, "bottom": bottom - top
             };
-
-            updateGameBoundary(gameBoundary);
+            dispatch({type: "Update_Game_Boundary", gameBoundary})
         }
     }, [gameAreaRef])
 
@@ -94,39 +123,32 @@ function GameArea() {
             ];
             const leftKey = 37;
             updateKeyCode(leftKey);
-            updateFoodPos(initialSnakePosition, gameBoundary);
-            updateGameOver(false);
-            setScore({...score, score: -1});
+            updateFoodPos(initialSnakePosition, state.gameBoundary);
+            dispatch({type: "Restart_Game"});
         }
     }, [keyCode] );
 
     // Update score on each food eat.
     useEffect( () => {
-        let newScore = {"score": score.score+1};
-        if ( score.highScore < newScore.score ) {
-            newScore   = {...newScore, highScore: newScore.score}
-        }
-        setScore({...score, ...newScore });
+        dispatch({type: "Increment_Score"});
     }, [foodPos])
     
     const snakeProps = {
         foodPos,
-        gameBoundary,
         keyCode,
-        isGameOver,
-        onGameOver: () => updateGameOver(true),
-        onFoodEat: (snakePositions) => updateFoodPos(snakePositions, gameBoundary)
+        ...state,
+        onGameOver: () => dispatch({type: "Update_Game_Over", isGameOver: true}),
+        onFoodEat: (snakePositions) => updateFoodPos(snakePositions, state.gameBoundary)
     };
-
 
     const gameOver = <div className="GameOver"><div>Game Over</div><span>Press <strong>space bar</strong> to restart</span></div>;
 
     return (
-        <div ref={gameAreaRef} className="GameArea" onKeyUp={(event) => updateKeyCode(event.keyCode, keyCode, isGameOver)} tabIndex="0">
-            <div className="Score">High Score: <strong>{score.highScore}</strong> Score: <strong>{score.score}</strong></div>
+        <div ref={gameAreaRef} className="GameArea" onKeyUp={(event) => updateKeyCode(event.keyCode, keyCode, state.isGameOver)} tabIndex="0">
+            <div className="Score">High Score: <strong>{state.highScore}</strong> Score: <strong>{state.score}</strong></div>
             <Snake {...snakeProps} />
             <Point xPos={foodPos.x} yPos={foodPos.y} />
-            {isGameOver ? gameOver : ""}
+            {state.isGameOver ? gameOver : ""}
         </div>
     )
 }
