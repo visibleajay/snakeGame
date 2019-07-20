@@ -22,3 +22,9 @@
     font-size: 4em;
 }
 
+.Score {
+    position: absolute;
+    top: -20px;
+    right: 0px;
+}
+

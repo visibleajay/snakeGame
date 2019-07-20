@@ -66,6 +66,7 @@ function GameArea() {
 
     const [gameBoundary, updateGameBoundary] = useState({});
     const [isGameOver, updateGameOver]       = useState(false);
+    const [score, setScore]                  = useState({'score': -1, 'highScore': -1});
     const [keyCode, updateKeyCode]           = useKeyUp();
     const [foodPos, updateFoodPos]           = useFoodPos();
 
@@ -95,8 +96,18 @@ function GameArea() {
             updateKeyCode(leftKey);
             updateFoodPos(initialSnakePosition, gameBoundary);
             updateGameOver(false);
+            setScore({...score, score: -1});
         }
     }, [keyCode] );
+
+    // Update score on each food eat.
+    useEffect( () => {
+        let newScore = {"score": score.score+1};
+        if ( score.highScore < newScore.score ) {
+            newScore   = {...newScore, highScore: newScore.score}
+        }
+        setScore({...score, ...newScore });
+    }, [foodPos])
     
     const snakeProps = {
         foodPos,
@@ -112,6 +123,7 @@ function GameArea() {
 
     return (
         <div ref={gameAreaRef} className="GameArea" onKeyUp={(event) => updateKeyCode(event.keyCode, keyCode, isGameOver)} tabIndex="0">
+            <div className="Score">High Score: <strong>{score.highScore}</strong> Score: <strong>{score.score}</strong></div>
             <Snake {...snakeProps} />
             <Point xPos={foodPos.x} yPos={foodPos.y} />
             {isGameOver ? gameOver : ""}
