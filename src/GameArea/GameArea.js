@@ -11,13 +11,22 @@ function useKeyUp(initialKeyCode = 37) {
 
     const [state, setState] = React.useState(initialKeyCode);
 
-    function setKeyUp(keyCode, state) {
-        const isSimilarOrParallelKeyPressed = (code) => code%2 === state%2;
+    function setKeyUp(keyCode, storedKeyCode, isGameOver) {
+
+        const isSimilarOrParallelKeyPressed = (code) => code !== 32 && code%2 === storedKeyCode%2;
+
+        // Match space on game over, then reset the application.
+        const isRestartGame =   (code) => code === 32 && isGameOver;
+
+        if ( isRestartGame(keyCode) ) {
+            setState(keyCode);
+            return ;
+        }
 
         if ( !possibleKeyCodes.includes(keyCode) || isSimilarOrParallelKeyPressed(keyCode) ) {
             return ;
         }
-    
+
         setState(keyCode);
     }
 
@@ -74,20 +83,38 @@ function GameArea() {
             updateGameBoundary(gameBoundary);
         }
     }, [gameAreaRef])
+
+    // Restart the game on spacebar.
+    useEffect( () => {
+        if ( keyCode === 32 ) { // space bar 
+            const initialSnakePosition = [
+                {"x": 200, "y": 100, "id": 0 },
+                {"x": 220, "y": 100, "id": 1 }
+            ];
+            const leftKey = 37;
+            updateKeyCode(leftKey);
+            updateFoodPos(initialSnakePosition, gameBoundary);
+            updateGameOver(false);
+        }
+    }, [keyCode] );
     
     const snakeProps = {
         foodPos,
         gameBoundary,
         keyCode,
+        isGameOver,
         onGameOver: () => updateGameOver(true),
         onFoodEat: (snakePositions) => updateFoodPos(snakePositions, gameBoundary)
     };
 
+
+    const gameOver = <div className="GameOver"><div>Game Over</div><span>Press <strong>space bar</strong> to restart</span></div>;
+
     return (
-        <div ref={gameAreaRef} className="GameArea" onKeyUp={(event) => updateKeyCode(event.keyCode, keyCode)} tabIndex="0">
+        <div ref={gameAreaRef} className="GameArea" onKeyUp={(event) => updateKeyCode(event.keyCode, keyCode, isGameOver)} tabIndex="0">
             <Snake {...snakeProps} />
             <Point xPos={foodPos.x} yPos={foodPos.y} />
-            {isGameOver ? <div className="GameOver">Game Over</div> : ""}
+            {isGameOver ? gameOver : ""}
         </div>
     )
 }

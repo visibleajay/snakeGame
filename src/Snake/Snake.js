@@ -78,14 +78,13 @@ export const snakePosition  = ( keyCode, currentPosition, isGameOver ) => {
     return newPosition;
 };
 
-function Snake({foodPos, gameBoundary, keyCode, onGameOver, onFoodEat}) {
+function Snake({foodPos, gameBoundary, isGameOver, keyCode, onGameOver, onFoodEat}) {
     const initialSnakePositions =   [
         {"x": 200, "y": 100, "id": 0 },
         {"x": 220, "y": 100, "id": 1 }
     ];
     const refContainer  =   useRef(null);
     const [snakePos, updateSnakePos] = useState(initialSnakePositions)
-    const [isGameOver, setGameOver]  = useState(false);
 
     useEffect( () => {
         const moveSnake = () => {
@@ -93,7 +92,6 @@ function Snake({foodPos, gameBoundary, keyCode, onGameOver, onFoodEat}) {
             if ( !newPosition ) return;
 
             if ( isItAGameOver(snakePos, gameBoundary, newPosition) ) {
-                setGameOver(true);
                 onGameOver();
                 clearInterval(refContainer.current); 
             } else {
@@ -107,6 +105,13 @@ function Snake({foodPos, gameBoundary, keyCode, onGameOver, onFoodEat}) {
             clearInterval(refContainer.current);
         }
     }, [snakePos, keyCode]);
+
+
+    useEffect( () => {
+        if ( keyCode == 32 ) { // space bar 
+            updateSnakePos(initialSnakePositions);
+        }
+    }, [keyCode]);
 
     return (    
         snakePos.map( ({x: left, y: top, id}, index) => {
