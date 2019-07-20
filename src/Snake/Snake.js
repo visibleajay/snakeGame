@@ -108,7 +108,7 @@ function Snake({foodPos, gameBoundary, isGameOver, keyCode, onGameOver, onFoodEa
 
 
     useEffect( () => {
-        if ( keyCode == 32 ) { // space bar 
+        if ( keyCode === 32 ) { // space bar 
             updateSnakePos(initialSnakePositions);
         }
     }, [keyCode]);

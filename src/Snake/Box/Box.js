@@ -7,7 +7,7 @@ import "./Box.css";
 
 function Box({top, left}) {
     return  (
-        <div className="Box" style={{'top': top, 'left': left }}></div>
+        <div role="Box" className="Box" style={{'top': top, 'left': left }}></div>
     );
 }
 
