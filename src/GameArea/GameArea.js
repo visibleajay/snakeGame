@@ -46,14 +46,14 @@ function useFoodPos(initialFoodPos = { "x": 200, "y": 140 }) {
         do {
             const {right, bottom}   =   gameBoundary;
     
-            let randomLeft   = Math.floor(Math.random()*right);
-            let randomBottom = Math.floor(Math.random()*bottom);
+            let foodPosLeft   = Math.floor(Math.random()*right);
+            let foodPosBottom = Math.floor(Math.random()*bottom);
     
-            if ( randomLeft >= right ) randomLeft = right - 20;
+            if ( foodPosLeft >= right ) foodPosLeft = right - 20;
     
-            if ( randomBottom >= bottom ) randomBottom = bottom - 20;
+            if ( foodPosBottom >= bottom ) foodPosBottom = bottom - 20;
     
-            foodPos = { x: randomLeft - randomLeft%20, y: randomBottom - randomBottom%20 };    
+            foodPos = { x: foodPosLeft - foodPosLeft%20, y: foodPosBottom - foodPosBottom%20 };    
         } while ( isFoodPosOnSnakePos( foodPos ))
     
         setState(foodPos);
