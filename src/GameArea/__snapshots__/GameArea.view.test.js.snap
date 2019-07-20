@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<GameArea /> Press down key and move the snake in down direction 1`] = `
+Array [
+  <div
+    class="Box"
+    role="Box"
+    style="top: 100px; left: 180px;"
+  />,
+  <div
+    class="Box"
+    role="Box"
+    style="top: 100px; left: 200px;"
+  />,
+]
+`;
+
+exports[`GameArea Comp Press down key and move the snake in down direction 1`] = `
+Array [
+  <div
+    class="Box"
+    role="Box"
+    style="top: 100px; left: 180px;"
+  />,
+  <div
+    class="Box"
+    role="Box"
+    style="top: 100px; left: 200px;"
+  />,
+]
+`;
