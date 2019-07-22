@@ -87,8 +87,7 @@ function reducer(state, action) {
             return {
                 ...state,
                 isGameOver: false,
-                score: -1,
-                highScore: -1
+                score: -1
             };
         default:
             return state;
